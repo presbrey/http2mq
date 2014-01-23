@@ -16,12 +16,13 @@ type Request struct {
 type RequestChan chan *Request
 
 var (
-	backlog  = flag.Uint("backlog", 8192, "incoming channel capacity")
-	backoff  = flag.Duration("backoff", time.Second, "pause between errors")
-	exchange = flag.String("exchange", "test", "AMQP exchange name")
-	key      = flag.String("key", "test", "AMQP routing key")
-	tag      = flag.String("tag", "http2mq", "AMQP consumer tag")
-	uri      = flag.String("uri", "amqp://localhost:5672/", "AMQP URI")
+	backlog      = flag.Uint("backlog", 8192, "incoming channel capacity")
+	backoff      = flag.Duration("backoff", time.Second, "pause between errors")
+	exchange     = flag.String("exchange", "test", "AMQP exchange name")
+	exchangeType = flag.String("exchangeType", "fanout", "AMQP exchange type")
+	key          = flag.String("key", "test", "AMQP routing key")
+	tag          = flag.String("tag", "http2mq", "AMQP consumer tag")
+	uri          = flag.String("uri", "amqp://localhost:5672/", "AMQP URI")
 
 	incoming = make(RequestChan, *backlog)
 )
@@ -38,13 +39,13 @@ func dial() (ch *amqp.Channel, err error) {
 	}
 
 	err = channel.ExchangeDeclare(
-		*exchange, // name
-		"direct",  // type
-		true,      // durable
-		false,     // auto-deleted
-		false,     // internal
-		false,     // noWait
-		nil,       // arguments
+		*exchange,     // name
+		*exchangeType, // type
+		true,          // durable
+		false,         // auto-deleted
+		false,         // internal
+		false,         // noWait
+		nil,           // arguments
 	)
 	if err != nil {
 		return
