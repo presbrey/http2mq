@@ -1,7 +1,8 @@
 # http2mq
-[![Build Status](https://travis-ci.org/presbrey/http2go.png)](https://travis-ci.org/presbrey/http2go)
+[![Build Status](https://travis-ci.org/presbrey/http2mq.png)](https://travis-ci.org/presbrey/http2mq)
 
 ## Install
 
-You can use go get command:
+Use the `go get` command eg.
+
     go get github.com/presbrey/http2mq
