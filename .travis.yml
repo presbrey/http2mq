@@ -1,3 +1,9 @@
 language: go
 go: 1.2
 install: go get -t -v ./...
+
+services:
+  - rabbitmq
+
+env:
+ - AMQP_URL=amqp://guest:guest@127.0.0.1:5672/ GOMAXPROCS=2
