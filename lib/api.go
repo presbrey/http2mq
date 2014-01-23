@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 )
 
 var (
@@ -51,7 +52,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	head := amqp.Table{}
 	for k, v := range req.Header {
-		head[k] = v
+		head[k] = strings.Join(v, "\n")
 	}
 	ctype := req.Header.Get("Content-Type")
 
