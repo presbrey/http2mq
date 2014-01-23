@@ -6,3 +6,7 @@
 Use the `go get` command eg.
 
     go get github.com/presbrey/http2mq
+
+## License
+
+[MIT](http://joe.mit-license.org/)
