@@ -6,6 +6,7 @@ import (
 	"github.com/streadway/amqp"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"strings"
 )
@@ -24,6 +25,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var (
 		data []byte
 		err  error
+		xff  string
 	)
 
 	if len(req.URL.Path) >= 5 && req.URL.Path == "/ping" {
@@ -58,7 +60,12 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	if *setXFF {
 		xff_ := req.Header.Get(XFF)
-		xff := req.RemoteAddr
+		addr, err := net.ResolveTCPAddr("tcp", req.RemoteAddr)
+		if err == nil {
+			xff = addr.IP.String()
+		} else {
+			xff = req.RemoteAddr
+		}
 		if len(xff) > 0 && len(xff_) > 0 {
 			xff += ", "
 		}
