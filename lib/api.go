@@ -13,7 +13,8 @@ import (
 )
 
 var (
-	setXFF = flag.Bool("xForwardedFor", true, "prepend remote address to X-Forwaded-For")
+	successCode = flag.Int("successCode", 201, "onSuccess HTTP status code")
+	setXFF      = flag.Bool("xForwardedFor", true, "prepend remote address to X-Forwaded-For")
 )
 
 const (
@@ -83,5 +84,5 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		Body:        data,
 	}
 	incoming <- elt
-	w.WriteHeader(201)
+	w.WriteHeader(*successCode)
 }
