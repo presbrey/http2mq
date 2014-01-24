@@ -9,6 +9,7 @@ import (
 	"net"
 	"net/http"
 	"strings"
+	"time"
 )
 
 var (
@@ -75,6 +76,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	head["Time"] = fmt.Sprintf("%d", time.Now().Unix())
 	elt := &Request{
 		Headers:     head,
 		ContentType: ctype,
