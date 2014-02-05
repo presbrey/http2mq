@@ -8,18 +8,29 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
-)
-
-var (
-	successCode = flag.Int("successCode", 201, "onSuccess HTTP status code")
-	setXFF      = flag.Bool("xForwardedFor", true, "prepend remote address to X-Forwaded-For")
 )
 
 const (
 	XFF = "X-Forwarded-For"
 )
+
+var (
+	escapeBody    = flag.Bool("escapeBody", false, "request body will be Go-escaped")
+	escapeHeaders = flag.Bool("escapeHeaders", true, "request headers will be Go-escaped")
+	setXFF        = flag.Bool("xForwardedFor", true, "prepend remote address to "+XFF)
+	successCode   = flag.Int("successCode", 201, "onSuccess HTTP status code")
+)
+
+func escape(s string) (r string) {
+	if len(s) > 0 {
+		r = strconv.Quote(s)
+		r = strings.Replace(r[1:len(r)-1], `\"`, `"`, -1)
+	}
+	return
+}
 
 type Handler struct{ http.Handler }
 
@@ -54,9 +65,19 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if *escapeBody {
+		data = []byte(escape(string(data)))
+	}
+
 	head := amqp.Table{}
-	for k, v := range req.Header {
-		head[k] = strings.Join(v, "\n")
+	if *escapeHeaders {
+		for k, v := range req.Header {
+			head[escape(k)] = escape(strings.Join(v, "\n"))
+		}
+	} else {
+		for k, v := range req.Header {
+			head[k] = strings.Join(v, "\n")
+		}
 	}
 	ctype := req.Header.Get("Content-Type")
 
