@@ -77,7 +77,6 @@ func (rc RequestChan) publish() error {
 			amqp.Publishing{
 				Headers:      amqp.Table(r.Headers),
 				ContentType:  r.ContentType,
-				DeliveryMode: amqp.Persistent,
 				Body:         r.Body,
 			},
 		)
