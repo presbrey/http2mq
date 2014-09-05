@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	bind = flag.String("bind", "", "bind address (empty=fcgi)")
+	bind    = flag.String("bind", "", "bind address (empty=fcgi)")
 	handler = http2mq.Handler{}
 )
 

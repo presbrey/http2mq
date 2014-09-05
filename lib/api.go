@@ -18,6 +18,7 @@ const (
 )
 
 var (
+	cors          = flag.Bool("cors", true, "allow CORS")
 	escapeBody    = flag.Bool("escapeBody", false, "request body will be Go-escaped")
 	escapeHeaders = flag.Bool("escapeHeaders", true, "request headers will be Go-escaped")
 	setXFF        = flag.Bool("xForwardedFor", true, "prepend remote address to "+XFF)
@@ -40,6 +41,31 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		err  error
 		xff  string
 	)
+
+	if *cors {
+		origins := req.Header["Origin"]
+		if len(origins) > 0 {
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.Header().Set("Access-Control-Allow-Origin", origins[0])
+		}
+		if req.Method == "OPTIONS" {
+			corsReqH := req.Header["Access-Control-Request-Headers"]
+			if len(corsReqH) > 0 {
+				w.Header().Set("Access-Control-Allow-Headers", strings.Join(corsReqH, ", "))
+			}
+			corsReqM := req.Header["Access-Control-Request-Method"]
+			if len(corsReqM) > 0 {
+				w.Header().Set("Access-Control-Allow-Methods", strings.Join(corsReqM, ", "))
+			} else {
+				w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+			}
+			if len(origins) < 1 {
+				w.Header().Set("Access-Control-Allow-Origin", "*")
+			}
+			w.WriteHeader(200)
+			return
+		}
+	}
 
 	if len(req.URL.Path) >= 5 && req.URL.Path == "/ping" {
 		fmt.Fprint(w, "OK")

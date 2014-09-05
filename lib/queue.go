@@ -75,9 +75,9 @@ func (rc RequestChan) publish() error {
 
 		err = out.Publish(*exchange, *key, false, false,
 			amqp.Publishing{
-				Headers:      amqp.Table(r.Headers),
-				ContentType:  r.ContentType,
-				Body:         r.Body,
+				Headers:     amqp.Table(r.Headers),
+				ContentType: r.ContentType,
+				Body:        r.Body,
 			},
 		)
 		if err != nil {
