@@ -105,7 +105,6 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			head[k] = strings.Join(v, "\n")
 		}
 	}
-	ctype := req.Header.Get("Content-Type")
 
 	if *setXFF {
 		xff_ := req.Header.Get(XFF)
@@ -124,11 +123,13 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	if len(req.Host) > 0 {
+		head["Host"] = req.Host
+	}
 	head["Time"] = fmt.Sprintf("%d", time.Now().Unix())
 	elt := &Request{
-		Headers:     head,
-		ContentType: ctype,
-		Body:        data,
+		Headers: head,
+		Body:    data,
 	}
 	incoming <- elt
 	w.WriteHeader(*successCode)
