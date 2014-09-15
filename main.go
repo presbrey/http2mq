@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"net/http/fcgi"
+	"os"
+	"runtime"
 
 	"github.com/presbrey/http2mq/lib"
 )
@@ -16,6 +18,9 @@ var (
 
 func init() {
 	flag.Parse()
+	if os.Getenv("GOMAXPROCS") == "" {
+		runtime.GOMAXPROCS(runtime.NumCPU())
+	}
 }
 
 func main() {
