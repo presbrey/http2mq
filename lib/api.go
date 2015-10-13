@@ -18,6 +18,7 @@ const (
 )
 
 var (
+	autoConfirm   = flag.Bool("confirm", true, "follow SubscribeURLs")
 	cors          = flag.Bool("cors", true, "allow CORS")
 	escapeBody    = flag.Bool("escapeBody", false, "request body will be Go-escaped")
 	escapeHeaders = flag.Bool("escapeHeaders", true, "request headers will be Go-escaped")
@@ -82,6 +83,11 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	if len(data) == 0 {
 		w.WriteHeader(204)
+		return
+	}
+
+	if *autoConfirm && confirm(data) {
+		w.WriteHeader(200)
 		return
 	}
 
