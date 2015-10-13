@@ -1,4 +1,4 @@
-# http2mq [![Build Status](https://travis-ci.org/presbrey/http2mq.png)](https://travis-ci.org/presbrey/http2mq)
+# http2mq [![Build Status](https://travis-ci.org/presbrey/http2mq.svg?branch=master)](https://travis-ci.org/presbrey/http2mq)
 
 ## Install
 
